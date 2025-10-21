@@ -120,8 +120,38 @@ public class MainActivity extends AppCompatActivity {
 
     // Actualiza el texto del TextView según el gesto detectado
     private void handlePoseResult(String feedback) {
-        runOnUiThread(() -> binding.tvFeedback.setText(feedback));
+        runOnUiThread(() -> {
+            binding.tvFeedback.setText(feedback);
+
+            if (feedback.contains("Volumen Subido")) {
+                subirVolumen();
+            } else if (feedback.contains("Pausar")) {
+                bajarVolumen();
+            }
+        });
     }
+
+    private void subirVolumen() {
+        android.media.AudioManager audioManager = (android.media.AudioManager) getSystemService(AUDIO_SERVICE);
+        if (audioManager != null) {
+            audioManager.adjustStreamVolume(
+                    android.media.AudioManager.STREAM_MUSIC,
+                    android.media.AudioManager.ADJUST_RAISE,
+                    android.media.AudioManager.FLAG_SHOW_UI
+            );
+        }
+    }
+    private void bajarVolumen() {
+        android.media.AudioManager audioManager = (android.media.AudioManager) getSystemService(AUDIO_SERVICE);
+        if (audioManager != null) {
+            audioManager.adjustStreamVolume(
+                    android.media.AudioManager.STREAM_MUSIC,
+                    android.media.AudioManager.ADJUST_LOWER,
+                    android.media.AudioManager.FLAG_SHOW_UI
+            );
+        }
+    }
+
 
     @Override
     protected void onDestroy() {
